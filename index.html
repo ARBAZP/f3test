@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Management</title>
+    <style>
+      * {
+	   margin: 0;
+	   padding: 0;
+       background-color: black;
+        
+	     color: white;
+        }
+
+        #employee-form{
+           margin-top: 40px;
+           display: flex;
+           flex-wrap: wrap;
+        
+        }
+
+        #submit{
+            margin-top: 30px;
+            background-color: aliceblue;
+            color: black;
+            border-radius: 5px;
+            height:30px;
+            width: 120px;
+        }
+        .input{
+            display: flex;
+            flex-direction: column;
+
+            margin-right: 60px;
+        }
+        .error-message {
+            color: red;
+        }
+
+        .success-message {
+            color: green;
+        }
+        input{
+            width: 350px;
+            height: 30px;
+            border-radius: 5px;
+    
+        }
+
+        h2{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Employee Management</h1>
+    <form id="employee-form">
+        <div class="input">
+        <label for="name">Enter Name</label>
+        <input type="text" id="name" required>
+        </div>
+        <div class="input">
+        <label for="profession"> Enter Profession</label>
+        <input type="text" id="profession" required>
+       </div>
+       <div class="input">
+        <label for="age">Enter Age</label>
+        <input type="number" id="age" required>
+       </div>
+       
+    </form>
+    <button type="submit" id="submit">Add Employee</button>
+    <div id="added-employees">
+        <h2>Added Employees</h2>
+        <ul id="employee-list"></ul>
+    </div>
+    <script>
+        let employees = [];
+        let idCounter = 1;
+
+        const form = document.getElementById('employee-form');
+        const employeeList = document.getElementById('employee-list');
+        const sub=document.getElementById('submit')
+        sub.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            const nameInput = document.getElementById('name');
+            const professionInput = document.getElementById('profession');
+            const ageInput = document.getElementById('age');
+
+            const name = nameInput.value;
+            const profession = professionInput.value;
+            const age = ageInput.value;
+
+            if (name && profession && age) {
+                const employee = {
+                    id: idCounter++,
+                    name: name,
+                    profession: profession,
+                    age: parseInt(age)
+                };
+
+                employees.push(employee);
+
+                const listItem = document.createElement('li');
+                listItem.textContent = `ID: ${employee.id}, Name: ${employee.name}, Profession: ${employee.profession}, Age: ${employee.age}`;
+                employeeList.appendChild(listItem);
+
+                nameInput.value = '';
+                professionInput.value = '';
+                ageInput.value = '';
+
+                const successMessage = document.createElement('p');
+                successMessage.textContent = 'Employee added successfully';
+                successMessage.classList.add('success-message');
+                form.appendChild(successMessage);
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 2000);
+            } else {
+                const errorMessage = document.createElement('p');
+                errorMessage.textContent = 'Please fill in all the required fields';
+                errorMessage.classList.add('error-message');
+                form.appendChild(errorMessage);
+                setTimeout(() => {
+                    errorMessage.remove();
+                }, 2000);
+            }
+        });
+
+        employeeList.addEventListener('click', (event) => {
+            if (event.target.tagName === 'LI') {
+                const employeeId = parseInt(event.target.textContent.split(':')[1]);
+                const index = employees.findIndex(employee => employee.id === employeeId);
+                if (index !== -1) {
+                    employees.splice(index, 1);
+                    event.target.remove();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
